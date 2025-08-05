@@ -2,41 +2,243 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tetris Game</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris - Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a5acd;
+            --primary-dark: #483d8b;
+            --secondary: #9370db;
+            --accent: #ff7e5f;
+            --light: #f8f9fa;
+            --dark: #2d3748;
+            --text: #4a5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 400px;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background-color: #ff6a45;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .btn i {
+            margin-right: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .logo {
+                font-size: 3rem;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            .menu {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="game-wrapper">
-        <div id="high-score-panel">
-            High Score: <span id="high-score">0</span>
-        </div>
-        <div id="canvas-container">
-            <canvas id="canvas"></canvas>
-            <div class="game-over-text" id="gameOverText">Game Over!</div> 
-        </div>
-        
-        <!-- Add PC side panel -->
-        <div class="pc-side-panel">
-            <canvas id="nextShapeCanvas"></canvas>
-            <canvas id="scoreCanvas"></canvas>
-            
-            <div class="controls-container">
-                <div class="controls">
-                    <button class="control-btn" id="left-btn">←</button>
-                    <button class="control-btn" id="rotate-btn">↻</button>
-                    <button class="control-btn" id="right-btn">→</button>
-                    <button class="control-btn" id="down-btn">↓</button>
-                </div>
-
-                <button class="undo-btn" onclick="resetVars()">
-                    <img src="./undo.png" alt="Reset"/>
-                </button>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
             </div>
-        </div> 
+            <h1>Tetris Classic</h1>
+            <p class="tagline">The timeless puzzle game that defined a generation</p>
+        </header>
+
+        <div class="menu">
+            <a href="game.html" class="btn btn-primary">
+                <i class="fas fa-play"></i> Play Game
+            </a>
+            <a href="how-to-play.html" class="btn btn-secondary">
+                <i class="fas fa-question-circle"></i> How to Play
+            </a>
+        </div>
     </div>
 
-    <img id="image" src="./rotations.png" style="display: none;" />
-    <script src="tetris.js"></script>
+    <footer>
+        <p>&copy; 2025 Tetris Classic | All Rights Reserved</p>
+    </footer>
+
+    <script>
+        // Instructions Modal
+        document.getElementById('instructions-btn').addEventListener('click', function() {
+            alert(`HOW TO PLAY TETRIS:\n\n← → Arrow Keys: Move piece\n↑ Arrow Key: Rotate\n↓ Arrow Key: Speed up\nSpace: Instant drop\n\nClear lines to score points!`);
+        });
+
+        // High Scores Modal
+        document.getElementById('highscores-btn').addEventListener('click', function() {
+            const scores = JSON.parse(localStorage.getItem('tetrisHighScores')) || [];
+            if (scores.length === 0) {
+                alert("No high scores yet! Play a game to set your first high score.");
+            } else {
+                let scoresText = "HIGH SCORES:\n\n";
+                scores.forEach((score, index) => {
+                    scoresText += `${index + 1}. ${score}\n`;
+                });
+                alert(scoresText);
+            }
+        });
+    </script>
 </body>
 </html>

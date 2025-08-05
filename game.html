@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tetris Classic</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-wrapper">
+        <div id="high-score-panel">
+            High Score: <span id="high-score">0</span>
+        </div>
+        <div id="canvas-container">
+            <canvas id="canvas"></canvas>
+            <div class="game-over-text" id="gameOverText">Game Over!</div> 
+        </div>
+        
+        <!-- Add PC side panel -->
+        <div class="pc-side-panel">
+            <canvas id="nextShapeCanvas"></canvas>
+            <canvas id="scoreCanvas"></canvas>
+            
+            <div class="controls-container">
+                <div class="controls">
+                    <button class="control-btn" id="left-btn">←</button>
+                    <button class="control-btn" id="rotate-btn">↻</button>
+                    <button class="control-btn" id="down-btn">↓</button>
+                    <button class="control-btn" id="right-btn">→</button>                   
+                </div>
+
+                <button class="undo-btn" onclick="resetVars()">
+                    <img src="./undo.png" alt="Reset"/>
+                </button>
+            </div>
+        </div> 
+    </div>
+
+    <img id="image" src="./rotations.png" style="display: none;" />
+    <script src="tetris.js"></script>
+</body>
+</html>

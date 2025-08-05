@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Play Tetris</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a5acd;
+            --primary-dark: #483d8b;
+            --secondary: #9370db;
+            --accent: #ff7e5f;
+            --light: #f8f9fa;
+            --dark: #2d3748;
+            --text: #4a5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: var(--accent);
+            transform: translateX(-3px);
+        }
+
+        .back-btn i {
+            margin-right: 8px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        h2 {
+            color: var(--accent);
+            margin: 2rem 0 1rem;
+            font-size: 1.5rem;
+        }
+
+        .instructions-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .instruction-card {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .instruction-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .instruction-icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-right: 1.5rem;
+            min-width: 40px;
+        }
+
+        .keyboard-key {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: var(--dark);
+            color: white;
+            border-radius: 5px;
+            font-family: monospace;
+            font-weight: bold;
+            margin: 0 0.3rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .instructions-container {
+                padding: 1.5rem;
+            }
+
+            .instruction-card {
+                flex-direction: column;
+            }
+
+            .instruction-icon {
+                margin-bottom: 1rem;
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="home.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Menu
+            </a>
+        </header>
+
+        <h1>How to Play Tetris</h1>
+
+        <div class="instructions-container">
+            <h2>Game Basics</h2>
+            <p>Tetris is a tile-matching puzzle game where you arrange falling blocks called "tetrominoes" to create complete horizontal lines.</p>
+
+            <div class="instruction-card">
+                <div class="instruction-icon">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <div>
+                    <h3>Objective</h3>
+                    <p>Rotate and move the falling tetrominoes to create complete horizontal lines without gaps. When a line is completed, it disappears and you earn points.</p>
+                </div>
+            </div>
+
+            <h2>Controls</h2>
+
+            <div class="instruction-card">
+                <div class="instruction-icon">
+                    <i class="fas fa-arrows-alt-h"></i>
+                </div>
+                <div>
+                    <h3>Movement</h3>
+                    <p>Use <span class="keyboard-key">←</span> and <span class="keyboard-key">→</span> arrow keys to move the piece left or right.</p>
+                    <p>On mobile: Swipe left or right on the screen.</p>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="instruction-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div>
+                    <h3>Rotation</h3>
+                    <p>Press <span class="keyboard-key">↑</span> to rotate the piece clockwise.</p>
+                    <p>On mobile: Swipe up or tap the rotate button.</p>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="instruction-icon">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+                <div>
+                    <h3>Falling Speed</h3>
+                    <p>Press <span class="keyboard-key">↓</span> to make the piece fall faster.</p>
+                </div>
+            </div>
+
+            <h2>Scoring</h2>
+            <div class="instruction-card">
+                <div class="instruction-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div>
+                    <h3>Points System</h3>
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <li>• 1 line: 1000 points</li>
+                        <li>• 1 shape: 10 points</li>
+                        <li>• 1 Press <span class="keyboard-key">↓</span>: 1 point</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="instruction-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div>
+                    <h3>Game Over</h3>
+                    <p>The game ends when the stacked tetrominoes reach the top of the playing field. Try to beat your high score!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Tetris Classic | All Rights Reserved</p>
+    </footer>
+</body>
+</html>
