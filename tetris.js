@@ -112,7 +112,7 @@ class Tetris {
 const imageSquareSize  = 24 
 const size = 40
 const framePerSecond = 24
-const gameSpeed = 5
+const gameSpeed = 2
 const canvas = document.getElementById("canvas");
 const nextShapeCanvas = document.getElementById("nextShapeCanvas");
 const scoreCanvas = document.getElementById("scoreCanvas");
@@ -120,8 +120,9 @@ const image = document.getElementById("image");
 const ctx = canvas.getContext("2d");
 const nctx = nextShapeCanvas.getContext("2d");
 const sctx = scoreCanvas.getContext("2d");
-const squareCountX = canvas.width /size;
-const squareCountY = canvas.height /size;
+let squareCountX = 10; // Standard Tetris width
+let squareCountY = 20; // Standard Tetris height
+let currentSize = 0; // Will hold the calculated block size
 
 const shapes = [
     new Tetris(0, 120, [
@@ -168,6 +169,7 @@ let nextShape;
 let score;
 let initialTwoDArr;
 let whiteLineThickness = 4;
+let highScore = localStorage.getItem('tetrisHighScore') || 0;
 
 let gameLoop = () => {
     setInterval( update, 1000 / gameSpeed);
@@ -184,6 +186,7 @@ let deleteCompeleteRows = () => {
         if(isComplete){
             console.log("complete row");
             score += 1000;
+            updateHighScore();
             for(let k = i; k >0 ; k--){
                 gameMap[k] = gameMap[k - 1];
             }
@@ -213,21 +216,106 @@ let update = () => {
         nextShape = getRandomShape();
         if(!currentShape.checkBottom()){
             gameOver = true;
+            updateHighScore();
+
         }
         score += 10;
+        updateHighScore();
+
     }
 };
 
-let drawRect = (x,y, width, height, color) => {
+let resizeCanvas = () => {
+    const container = document.getElementById('canvas-container');
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    
+    // Calculate block size to maintain aspect ratio
+    const blockSizeWidth = containerWidth / squareCountX;
+    const blockSizeHeight = containerHeight / squareCountY;
+    currentSize = Math.min(blockSizeWidth, blockSizeHeight);
+    
+    // Set canvas dimensions
+    canvas.width = currentSize * squareCountX;
+    canvas.height = currentSize * squareCountY;
+    
+    // Resize next shape and score canvases
+    const sidePanelSize = Math.min(containerWidth * 0.2, 100);
+    nextShapeCanvas.width = sidePanelSize;
+    nextShapeCanvas.height = sidePanelSize;
+    scoreCanvas.width = sidePanelSize;
+    scoreCanvas.height = sidePanelSize;
+    
+    // Redraw if game is running
+    if (currentShape) {
+        draw();
+    }
+    if (gameOver) {
+        drawGameOver();
+    }
+};
+
+let updateHighScore = () => {
+    const currentScoreNum = Number(score);
+    const highScoreNum = Number(highScore);
+    
+    if(currentScoreNum > highScoreNum){
+        highScore = currentScoreNum;
+        localStorage.setItem('tetrisHighScore', highScore);
+        updateHighScoreDisplay();
+    }
+};
+
+let updateHighScoreDisplay = () => {
+    const highScoreElement = document.getElementById('high-score');
+    if(highScoreElement){
+        highScoreElement.textContent = highScore;
+    }
+};
+
+// Modify drawing functions to use currentSize instead of size
+let drawRect = (x, y, width, height, color) => {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, width, height);
 };
 
 let drawBackground = () => {
-    drawRect(0, 0, canvas.width, canvas.height, '#bca0dc')
-    for(let i =0; i < squareCountX + 1; i++){
+    // Draw main background
+    drawRect(0, 0, canvas.width, canvas.height, '#bca0dc');
+    
+    // Draw vertical borders (left and right)
+    const borderWidth = whiteLineThickness;
+
+    // Top border
+    drawRect(
+        0,
+        0,
+        canvas.width,
+        borderWidth,
+        "white"
+    );
+    
+    // Left border
+    drawRect(
+        0, // Start at left edge
+        0,
+        borderWidth,
+        canvas.height,
+        "white"
+    );
+    
+    // Right border
+    drawRect(
+        canvas.width - borderWidth, 
+        0,
+        borderWidth,
+        canvas.height,
+        "white"
+    );
+
+    for(let i = 0; i < squareCountX + 1; i++){
         drawRect(
-            size * i - whiteLineThickness,
+            currentSize * i - whiteLineThickness,
             0,
             whiteLineThickness,
             canvas.height,
@@ -235,10 +323,10 @@ let drawBackground = () => {
         );
     }
 
-    for(let i =0; i < squareCountY + 1; i++){
+    for(let i = 0; i < squareCountY + 1; i++){
         drawRect(
             0,
-            size * i - whiteLineThickness,
+            currentSize * i - whiteLineThickness,
             canvas.width,
             whiteLineThickness,
             "white"
@@ -247,19 +335,19 @@ let drawBackground = () => {
 };
 
 let drawCurrentTetris = () => {
-    for(let i =0; i < currentShape.template.length; i++){
-        for(let j =0; j < currentShape.template.length; j++){
-            if( currentShape.template[i][j] == 0) continue;
+    for(let i = 0; i < currentShape.template.length; i++){
+        for(let j = 0; j < currentShape.template.length; j++){
+            if(currentShape.template[i][j] == 0) continue;
             ctx.drawImage(
                 image,
                 currentShape.imageX,
                 currentShape.imageY,
                 imageSquareSize,
                 imageSquareSize,
-                Math.trunc(currentShape.x) * size + size * i,
-                Math.trunc(currentShape.y) * size + size * j,
-                size,
-                size
+                Math.trunc(currentShape.x) * currentSize + currentSize * i,
+                Math.trunc(currentShape.y) * currentSize + currentSize * j,
+                currentSize,
+                currentSize
             );
         }
     }
@@ -276,10 +364,10 @@ let drawSquares = () => {
                 t[j].imageY,
                 imageSquareSize,
                 imageSquareSize,
-                j * size,
-                i * size,
-                size,
-                size 
+                j * currentSize,
+                i * currentSize,
+                currentSize,
+                currentSize 
             );
         }
     }
@@ -288,8 +376,15 @@ let drawSquares = () => {
 let drawNextShape = () => {
     nctx.fillStyle = "#bca0dc";
     nctx.fillRect(0, 0, nextShapeCanvas.width, nextShapeCanvas.height);
-    for(let i = 0; i < nextShape.template.length; i++){
-        for(let j = 0; j < nextShape.template.length; j++){
+    
+    // Calculate size based on canvas dimensions
+    const boxSize = Math.min(nextShapeCanvas.width, nextShapeCanvas.height) * 0.8;
+    const blockSize = boxSize / 4;
+    const offsetX = (nextShapeCanvas.width - (nextShape.template.length * blockSize)) / 2;
+    const offsetY = (nextShapeCanvas.height - (nextShape.template.length * blockSize)) / 2;
+
+    for(let i = 0; i < nextShape.template.length; i++) {
+        for(let j = 0; j < nextShape.template.length; j++) {
             if(nextShape.template[i][j] == 0) continue;
             nctx.drawImage(
                 image,
@@ -297,36 +392,54 @@ let drawNextShape = () => {
                 nextShape.imageY,
                 imageSquareSize,
                 imageSquareSize,
-                size * i,
-                size * j + size,
-                size,
-                size
+                offsetX + blockSize * i,
+                offsetY + blockSize * j,
+                blockSize,
+                blockSize
             );
         }
     }
 };
 
 let drawScore = () => {
-    sctx.clearRect( 0, 0, scoreCanvas.width, scoreCanvas.height);
-    sctx.font = "64px Poppins";
-    sctx.fillStyle = "black";
-    sctx.fillText(score, 10, 50);
+    sctx.fillStyle = "#bca0dc";
+    sctx.fillRect(0, 0, scoreCanvas.width, scoreCanvas.height);
+    
+    const fontSize = Math.min(scoreCanvas.width * 0.2, scoreCanvas.height * 0.5);
+    sctx.font = `bold ${fontSize}px Poppins`;
+    sctx.fillStyle = "white";
+    sctx.textAlign = "center";
+    sctx.textBaseline = "middle";
+    sctx.fillText(score.toString(), scoreCanvas.width / 2, scoreCanvas.height / 2);
 };
+
 let drawGameOver = () => {
-    ctx.font = "78px Poppins";
-    ctx.fillStyle = "black";
-    ctx.fillText("Game Over!", 10, canvas.height / 2);
+    const gameOverText = document.getElementById('gameOverText');
+    
+    // Calculate responsive font size based on canvas dimensions
+    const fontSize = Math.min(canvas.width * 0.1, canvas.height * 0.1);
+    gameOverText.style.display = 'block';
+    gameOverText.style.fontSize = `${fontSize}px`;
+    gameOverText.style.fontFamily = 'Poppins, sans-serif';
+    gameOverText.style.fontWeight = 'bold';
+    
+    if (window.innerWidth > window.innerHeight) {
+        gameOverText.style.fontSize = '3vw';
+    }
 };
 
 let draw = () => {
-    ctx.clearRect(0,0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
     drawSquares();
     drawCurrentTetris();
     drawNextShape();
-    drawScore(); 
-    if(gameOver){
+    drawScore();
+    
+    if (gameOver) {
         drawGameOver();
+    } else {
+        document.getElementById('gameOverText').style.display = 'none';
     }
 };
 
@@ -348,6 +461,7 @@ let resetVars = () => {
     currentShape = getRandomShape();
     nextShape = getRandomShape();
     gameMap = initialTwoDArr;
+    document.getElementById('gameOverText').style.display = 'none';
 };
 
 window.addEventListener("keydown", (event) => {
@@ -361,5 +475,76 @@ window.addEventListener("keydown", (event) => {
         currentShape.moveBottom();
 });
 
-resetVars();
-gameLoop();
+
+// Add mobile controls
+document.getElementById('left-btn').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    currentShape.moveLeft();
+});
+document.getElementById('right-btn').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    currentShape.moveRight();
+});
+document.getElementById('rotate-btn').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    currentShape.changeRotation();
+});
+document.getElementById('down-btn').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    currentShape.moveBottom();
+});
+
+// Also add click events for devices that might use mouse on mobile
+document.getElementById('left-btn').addEventListener('click', () => currentShape.moveLeft());
+document.getElementById('right-btn').addEventListener('click', () => currentShape.moveRight());
+document.getElementById('rotate-btn').addEventListener('click', () => currentShape.changeRotation());
+document.getElementById('down-btn').addEventListener('click', () => currentShape.moveBottom());
+
+// Handle swipe gestures for better mobile control
+let touchStartX = 0;
+let touchStartY = 0;
+
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}, {passive: false});
+
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+}, {passive: false});
+
+canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    
+    // Horizontal swipe (more prominent)
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 30) {
+            currentShape.moveRight();
+        } else if (diffX < -30) {
+            currentShape.moveLeft();
+        }
+    } 
+    // Vertical swipe
+    else {
+        if (diffY > 30) {
+            currentShape.moveBottom();
+        } else if (diffY < -30) {
+            currentShape.changeRotation();
+        }
+    }
+}, {passive: false});
+
+let initGame = () => {
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    resetVars();
+    gameLoop();
+};
+
+window.addEventListener('load', initGame);
