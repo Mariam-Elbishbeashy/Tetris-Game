@@ -52,7 +52,7 @@ class Tetris {
                 if(realX + 1 >= squareCountX){
                     return false;
                 }
-                if (gameMap[realY][realX - 1].imageX != -1) return false;
+                if (gameMap[realY][realX + 1].imageX != -1) return false;
             }
         }
         return true;
@@ -123,6 +123,11 @@ const sctx = scoreCanvas.getContext("2d");
 let squareCountX = 10; // Standard Tetris width
 let squareCountY = 20; // Standard Tetris height
 let currentSize = 0; // Will hold the calculated block size
+let baseGameSpeed = 2; // Default speed
+let currentGameSpeed = baseGameSpeed;
+let speedIncreaseThreshold = 4000; // Score needed to increase speed
+let speedIncreaseAmount = 0.5; // How much faster it gets
+let manualSpeedMultiplier = 1;
 
 const shapes = [
     new Tetris(0, 120, [
@@ -172,8 +177,8 @@ let whiteLineThickness = 4;
 let highScore = localStorage.getItem('tetrisHighScore') || 0;
 
 let gameLoop = () => {
-    setInterval( update, 1000 / gameSpeed);
-    setInterval( draw, 1000 / framePerSecond);
+    setInterval(update, 1000 / (currentGameSpeed * manualSpeedMultiplier));
+    setInterval(draw, 1000 / framePerSecond);
 };
 
 let deleteCompeleteRows = () => {
@@ -201,6 +206,12 @@ let deleteCompeleteRows = () => {
 
 let update = () => {
     if(gameOver) return;
+    if(score >= speedIncreaseThreshold && currentGameSpeed < 10) {
+        speedIncreaseThreshold *= 2; // Double next threshold
+        currentGameSpeed += speedIncreaseAmount;
+        console.log("Speed increased to:", currentGameSpeed);
+    }
+    
     if(currentShape.checkBottom()){
         currentShape.y += 1;
     } else {
@@ -461,6 +472,12 @@ let resetVars = () => {
     }
     score = 0;
     gameOver = false;
+    currentGameSpeed = baseGameSpeed;
+    speedIncreaseThreshold = 4000;
+    const savedSpeed = localStorage.getItem('tetrisSpeed');
+    if(savedSpeed) {
+        manualSpeedMultiplier = parseFloat(savedSpeed);
+    }
     currentShape = getRandomShape();
     nextShape = getRandomShape();
     gameMap = initialTwoDArr;

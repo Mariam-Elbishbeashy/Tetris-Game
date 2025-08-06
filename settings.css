@@ -1,0 +1,122 @@
+.speed-select {
+    background: rgba(255,255,255,0.1);
+    color: black;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Speed confirmation message */
+.speed-confirmation {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.speed-confirmation.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Custom Select Container */
+.speed-control {
+    position: relative;
+    width: 200px;
+    margin-left: auto; /* Align to right side of setting item */
+}
+
+/* Base Select Styling */
+.speed-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 37%;
+    padding: 10px 15px;
+    font-family: 'Poppins', sans-serif;
+    font-size: .80rem;
+    color: white;
+    background: rgba(106, 90, 205, 0.8); /* --primary with opacity */
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover State */
+.speed-select:hover {
+    background: rgba(106, 90, 205, 0.9);
+    border-color: #ff926f; /* Lighter --accent */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Focus State */
+.speed-select:focus {
+    outline: none;
+    border-color: var(--secondary);
+    background: rgba(106, 90, 205, 1);
+}
+
+/* Dropdown Arrow */
+.speed-control::after {
+    content: "▼";
+    font-size: 0.7rem;
+    color: var(--accent);
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: transform 0.2s ease;
+}
+
+/* Active Dropdown State */
+.speed-control:active::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Dropdown Options Styling */
+.speed-select option {
+    background: var(--primary-dark); /* Dark purple background */
+    color: white;
+    padding: 10px;
+}
+
+/* For Firefox - option hover color */
+.speed-select option:hover {
+    background: var(--accent) !important;
+    color: var(--dark);
+}
+
+/* For Chrome - scrollbar styling */
+.speed-select::-webkit-scrollbar {
+    width: 8px;
+}
+
+.speed-select::-webkit-scrollbar-track {
+    background: var(--primary);
+}
+
+.speed-select::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 4px;
+}
+
+/* Disabled State */
+.speed-select:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

@@ -6,6 +6,7 @@
     <title>Tetris - Settings</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./settings.css">
     <style>
         :root {
             --primary: #6a5acd;
@@ -238,9 +239,26 @@
                 </div>
                 <button id="reset-highscore-btn" class="btn btn-reset">Reset</button>
             </div>
+
+            <div class="setting-item">
+                <div>
+                    <h3>Game Speed</h3>
+                    <p>Adjust difficulty level</p>
+                </div>
+                <select id="speed-select" class="speed-select">
+                    <option value="0.75">Easy (75%)</option>
+                    <option value="1" selected>Normal</option>
+                    <option value="2">Hard (125%)</option>
+                    <option value="3">Expert (150%)</option>
+                    <option value="5">Insane (200%)</option>
+
+                </select>
+            </div>
         </div>
     </div>
-
+    <div class="speed-confirmation" id="speed-confirmation">
+        Speed setting saved!
+    </div>
     <!-- Confirmation Modal -->
     <div class="modal-overlay" id="confirm-modal">
         <div class="modal">
@@ -302,7 +320,36 @@
                     confirmModal.classList.remove('active');
                 }
             });
+            // Add to your existing settings.js script
+            const speedSelect = document.getElementById('speed-select');
+            const speedConfirmation = document.getElementById('speed-confirmation');
+
+            // Load saved speed
+            const savedSpeed = localStorage.getItem('tetrisSpeed') || '1';
+            speedSelect.value = savedSpeed;
+
+            // Handle speed changes
+            speedSelect.addEventListener('change', (e) => {
+                const newSpeed = e.target.value;
+                localStorage.setItem('tetrisSpeed', newSpeed);
+                
+                // Show confirmation
+                speedConfirmation.textContent = `Speed set to: ${speedSelect.options[speedSelect.selectedIndex].text}`;
+                speedConfirmation.classList.add('active');
+                
+                // Hide after 2 seconds
+                setTimeout(() => {
+                    speedConfirmation.classList.remove('active');
+                }, 2000);
+                
+                // Vibrate on mobile if supported
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50);
+                }
+            });
         });
+
+        
     </script>
 </body>
 </html>
