@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris - Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a5acd;
+            --primary-dark: #483d8b;
+            --secondary: #9370db;
+            --accent: #ff7e5f;
+            --light: #f8f9fa;
+            --dark: #2d3748;
+            --text: #4a5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+
+        .settings-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 1rem;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-reset {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #ff6a45;
+            transform: translateY(-2px);
+        }
+
+        .high-score-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        /* Custom Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            border-radius: 15px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        .modal-body {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .modal-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 100px;
+        }
+
+        .modal-btn-confirm {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .modal-btn-cancel {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .success-message {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .success-message.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <!-- Main Content -->
+    <div class="container">
+        <header>
+            <h1>Game Settings</h1>
+        </header>
+
+        <div class="settings-panel">
+            <div class="setting-item">
+                <div>
+                    <h3>High Score</h3>
+                    <p>Your personal best record</p>
+                </div>
+                <span id="high-score-display" class="high-score-value">0</span>
+            </div>
+
+            <div class="setting-item">
+                <div>
+                    <h3>Reset Progress</h3>
+                    <p>Clear your high score</p>
+                </div>
+                <button id="reset-highscore-btn" class="btn btn-reset">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal">
+            <div class="modal-header">Reset High Score?</div>
+            <div class="modal-body">
+                Are you sure you want to reset your high score? This cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" id="cancel-reset">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="confirm-reset">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message" id="success-message">
+        High score has been reset!
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load high score
+            const highScore = localStorage.getItem('tetrisHighScore') || 0;
+            document.getElementById('high-score-display').textContent = highScore;
+
+            // Modal elements
+            const resetBtn = document.getElementById('reset-highscore-btn');
+            const confirmModal = document.getElementById('confirm-modal');
+            const cancelBtn = document.getElementById('cancel-reset');
+            const confirmBtn = document.getElementById('confirm-reset');
+            const successMessage = document.getElementById('success-message');
+
+            // Show modal when reset button clicked
+            resetBtn.addEventListener('click', () => {
+                confirmModal.classList.add('active');
+            });
+
+            // Hide modal when cancel clicked
+            cancelBtn.addEventListener('click', () => {
+                confirmModal.classList.remove('active');
+            });
+
+            // Confirm reset
+            confirmBtn.addEventListener('click', () => {
+                localStorage.setItem('tetrisHighScore', 0);
+                document.getElementById('high-score-display').textContent = 0;
+                confirmModal.classList.remove('active');
+                
+                // Show success message
+                successMessage.classList.add('active');
+                setTimeout(() => {
+                    successMessage.classList.remove('active');
+                }, 3000);
+            });
+
+            // Close modal when clicking outside
+            confirmModal.addEventListener('click', (e) => {
+                if (e.target === confirmModal) {
+                    confirmModal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -56,7 +56,7 @@ body {
 
 #nextShapeCanvas {
     position: absolute;
-    top: 1rem;
+    top: 3rem;
     right: 1rem;
     width: 20%;
     max-width: 100px;
@@ -69,7 +69,7 @@ body {
 
 #scoreCanvas {
     position: absolute;
-    top: calc(20% + 2rem);
+    top: calc(20% + 1rem);
     right: 1rem;
     width: 20%;
     max-width: 100px;
@@ -299,4 +299,43 @@ body {
     .controls-container {
         margin-top: auto;
     }
+}
+
+/* Minimal back button styles */
+#back-btn-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+#back-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+#back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#high-score-display {
+    font-size: 1.2rem;
+}
+
+#high-score {
+    font-weight: bold;
+    color: var(--accent);
 }

@@ -256,20 +256,23 @@ let resizeCanvas = () => {
 };
 
 let updateHighScore = () => {
-    const currentScoreNum = Number(score);
-    const highScoreNum = Number(highScore);
-    
-    if(currentScoreNum > highScoreNum){
-        highScore = currentScoreNum;
-        localStorage.setItem('tetrisHighScore', highScore);
-        updateHighScoreDisplay();
+    try {
+        const currentScoreNum = Number(score);
+        const highScoreNum = Number(localStorage.getItem('tetrisHighScore')) || 0;
+        if (currentScoreNum > highScoreNum) {
+            localStorage.setItem('tetrisHighScore', currentScoreNum);
+            highScore = currentScoreNum;
+        }
+    } catch (e) {
+        console.error("LocalStorage error:", e);
     }
+    updateHighScoreDisplay();
 };
 
 let updateHighScoreDisplay = () => {
-    const highScoreElement = document.getElementById('high-score');
-    if(highScoreElement){
-        highScoreElement.textContent = highScore;
+    const highScoreElement = document.getElementById('high-score-display');
+    if (highScoreElement) {
+        highScoreElement.innerHTML = `High Score: <span id="high-score">${highScore}</span>`;
     }
 };
 
@@ -461,6 +464,8 @@ let resetVars = () => {
     currentShape = getRandomShape();
     nextShape = getRandomShape();
     gameMap = initialTwoDArr;
+    highScore = Number(localStorage.getItem('tetrisHighScore')) || 0;
+    updateHighScoreDisplay(); 
     document.getElementById('gameOverText').style.display = 'none';
 };
 
@@ -492,6 +497,16 @@ document.getElementById('rotate-btn').addEventListener('touchstart', (e) => {
 document.getElementById('down-btn').addEventListener('touchstart', (e) => {
     e.preventDefault();
     currentShape.moveBottom();
+});
+// Back button functionality
+document.getElementById('back-btn').addEventListener('click', () => {
+    window.location.href = 'index.html';
+});
+
+// For touch devices
+document.getElementById('back-btn').addEventListener('touchend', (e) => {
+    e.preventDefault();
+    window.location.href = 'index.html';
 });
 
 // Also add click events for devices that might use mouse on mobile
