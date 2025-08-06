@@ -7,6 +7,23 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div id="game-loading">
+        <div class="loading-container">
+            <div class="tetris-loader">
+                <div class="tetris-block i-block"></div>
+                <div class="tetris-block o-block"></div>
+                <div class="tetris-block t-block"></div>
+                <div class="tetris-block l-block"></div>
+            </div>
+            <div class="loading-text">
+                <span class="loading-title">PREPARING GAME</span>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="loading-tip" id="loading-tip"></div>
+            </div>
+        </div>
+    </div>
     <div id="game-wrapper">
         <div id="back-btn-container">
             <button id="back-btn">← Back</button>

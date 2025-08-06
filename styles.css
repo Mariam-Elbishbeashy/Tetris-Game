@@ -339,3 +339,104 @@ body {
     font-weight: bold;
     color: var(--accent);
 }
+
+
+#game-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    max-width: 400px;
+    width: 90%;
+}
+
+.tetris-loader {
+    display: flex;
+    gap: 1rem;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.tetris-block {
+    width: 30px;
+    height: 30px;
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+}
+
+.i-block { background: #00ff91b7; animation-delay: 0.1s; }
+.o-block { background: #0091ffc2; animation-delay: 0.3s; }
+.t-block { background: #ff0000c9; animation-delay: 0.5s; }
+.l-block { background: #ffdd00ce; animation-delay: 0.7s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotateX(0) rotateY(0); }
+    50% { transform: translateY(-30px) rotateX(10deg) rotateY(10deg); }
+}
+
+.loading-text {
+    text-align: center;
+    width: 100%;
+}
+
+.loading-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: white;
+    display: block;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), #ff9e7d);
+    border-radius: 3px;
+    transition: width 0.4s ease-out;
+}
+
+.loading-tip {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    font-style: italic;
+    min-height: 2rem;
+}
+
+/* Tetris block shapes */
+.i-block::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(255,255,255,0.3) 0%, 
+        rgba(255,255,255,0.1) 50%, 
+        rgba(0,0,0,0.1) 100%);
+}

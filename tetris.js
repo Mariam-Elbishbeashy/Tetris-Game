@@ -572,6 +572,17 @@ canvas.addEventListener('touchend', (e) => {
     }
 }, {passive: false});
 
+
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        const loading = document.getElementById('game-loading');
+        loading.style.opacity = '0';
+        setTimeout(() => {
+            loading.style.display = 'none';
+        }, 500);
+    }, 7000); // Show for at least 1 second
+});
+
 let initGame = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
@@ -579,4 +590,55 @@ let initGame = () => {
     gameLoop();
 };
 
-window.addEventListener('load', initGame);
+const loadingTips = [
+    "Did you know? The Tetris theme song is called 'Korobeiniki'",
+    "Tip: Press 'Up' to rotate pieces",
+    "Fun fact: Tetris was created in 1984 by Alexey Pajitnov",
+    "Strategy: Leave space for the I-block to clear 4 lines at once"
+];
+
+// Configuration - Adjust these for desired duration
+const MIN_LOADING_TIME = 7000; // 7 seconds total loading time
+const PROGRESS_UPDATE_INTERVAL = 50; // More frequent updates (ms)
+const BASE_INCREMENT = 0.5; // Tiny base increment (%)
+const RANDOM_INCREMENT = 1.5; // Small random boost (%)
+
+function initLoadingScreen() {
+    const loadingScreen = document.getElementById('game-loading');
+    const progressFill = document.querySelector('.progress-fill');
+    const loadingTip = document.getElementById('loading-tip');
+    const startTime = Date.now();
+    
+    // Show random tip
+    loadingTip.textContent = loadingTips[Math.floor(Math.random() * loadingTips.length)];
+    
+    // Simulate loading progress
+    let progress = 0;
+    const interval = setInterval(() => {
+        // Calculate time-based progress (0-100 over MIN_LOADING_TIME)
+        const elapsed = Date.now() - startTime;
+        const timeRatio = Math.min(elapsed / MIN_LOADING_TIME, 1);
+        
+        // Smooth progress calculation
+        progress = Math.min(
+            progress + BASE_INCREMENT + (Math.random() * RANDOM_INCREMENT),
+            timeRatio * 100
+        );
+        
+        progressFill.style.width = `${progress}%`;
+        
+        // Complete only after full time elapsed and progress reaches 100%
+        if (progress >= 100 && elapsed >= MIN_LOADING_TIME) {
+            clearInterval(interval);
+            loadingScreen.style.opacity = '0';
+            initGame();
+        }
+    }, PROGRESS_UPDATE_INTERVAL);
+}
+
+window.addEventListener('load', initLoadingScreen);
+
+// Modified window load event
+window.addEventListener('load', function() {
+    initLoadingScreen();
+});
