@@ -1,3 +1,42 @@
+// Audio elements
+const moveSound = document.getElementById("move-sound");
+const rotateSound = document.getElementById("rotate-sound");
+const dropSound = document.getElementById("drop-sound");
+const clearSound = document.getElementById("clear-sound");
+const gameoverSound = document.getElementById("gameover-sound");
+const levelupSound = document.getElementById("levelup-sound");
+
+// Audio control functions
+function playMoveSound() {
+    moveSound.currentTime = 0;
+    moveSound.play().catch(e => console.log("Audio play failed:", e));
+}
+
+function playRotateSound() {
+    rotateSound.currentTime = 0;
+    rotateSound.play().catch(e => console.log("Audio play failed:", e));
+}
+
+function playDropSound() {
+    dropSound.currentTime = 0;
+    dropSound.play().catch(e => console.log("Audio play failed:", e));
+}
+
+function playClearSound() {
+    clearSound.currentTime = 0;
+    clearSound.play().catch(e => console.log("Audio play failed:", e));
+}
+
+function playGameoverSound() {
+    gameoverSound.currentTime = 0;
+    gameoverSound.play().catch(e => console.log("Audio play failed:", e));
+}
+
+function playLevelupSound() {
+    levelupSound.currentTime = 0;
+    levelupSound.play().catch(e => console.log("Audio play failed:", e));
+}
+
 class Tetris {
     constructor(imageX, imageY, template){
         this.imageY = imageY;
@@ -61,12 +100,14 @@ class Tetris {
     moveRight() {
         if (this.checkRight()){
             this.x += 1;
+            playMoveSound();
         }
     }
 
     moveLeft() {
         if(this.checkLeft()){
             this.x -= 1;
+            playMoveSound();
         }
     }
 
@@ -74,6 +115,7 @@ class Tetris {
         if(this.checkBottom()){
             this.y += 1;
             score += 1;
+            playDropSound();
         }
     }
 
@@ -106,6 +148,8 @@ class Tetris {
                 if (gameMap[realY][realX - 1].imageX != -1) return false;
             }
         }
+        playRotateSound();
+        return true;
     }
 }
 
@@ -182,6 +226,7 @@ let gameLoop = () => {
 };
 
 let deleteCompeleteRows = () => {
+    let rowsCleared = 0;
     for(let i = 0; i < gameMap.length; i++){
         let t = gameMap[i];
         let isComplete = true;
@@ -189,6 +234,7 @@ let deleteCompeleteRows = () => {
             if(t[j].imageX == -1) isComplete = false;
         }
         if(isComplete){
+            rowsCleared++;
             console.log("complete row");
             score += 1000;
             updateHighScore();
@@ -202,6 +248,9 @@ let deleteCompeleteRows = () => {
             gameMap[0] = temp;
         }
     }
+    if (rowsCleared > 0) {
+        playClearSound();
+    }
 }
 
 let update = () => {
@@ -209,6 +258,7 @@ let update = () => {
     if(score >= speedIncreaseThreshold && currentGameSpeed < 10) {
         speedIncreaseThreshold *= 2; // Double next threshold
         currentGameSpeed += speedIncreaseAmount;
+        playLevelupSound();
         console.log("Speed increased to:", currentGameSpeed);
     }
     
@@ -228,11 +278,10 @@ let update = () => {
         if(!currentShape.checkBottom()){
             gameOver = true;
             updateHighScore();
-
+            playGameoverSound();
         }
         score += 10;
         updateHighScore();
-
     }
 };
 
@@ -535,16 +584,55 @@ document.getElementById('down-btn').addEventListener('click', () => currentShape
 // Handle swipe gestures for better mobile control
 let touchStartX = 0;
 let touchStartY = 0;
+let lastSwipeTime = 0;
+let swipeCooldown = 200; // milliseconds between swipes
+let downInterval; 
+let lastTap = 0;
 
 canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
+    
+    // For touch-only mode, add a tap handler for rotation
+    if (touchOnlyMode) {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        
+        if (tapLength < 300 && tapLength > 0) {
+            // Double tap for rotation
+            currentShape.changeRotation();
+        }
+        
+        lastTap = currentTime;
+    }
 }, {passive: false});
+
+const swipeThreshold = 100; // pixels per move (tweak to sensitivity)
 
 canvas.addEventListener('touchmove', (e) => {
     e.preventDefault();
-}, {passive: false});
+    const touchCurrentX = e.touches[0].clientX;
+    const touchCurrentY = e.touches[0].clientY;
+
+    const diffX = touchCurrentX - touchStartX;
+    const diffY = touchCurrentY - touchStartY;
+
+    // Horizontal movement
+    if (diffX > swipeThreshold) {
+        currentShape.moveRight();
+        touchStartX = touchCurrentX; // reset start point after move
+    } else if (diffX < -swipeThreshold) {
+        currentShape.moveLeft();
+        touchStartX = touchCurrentX;
+    }
+
+    // Vertical movement (soft drop)
+    if (diffY > swipeThreshold) {
+        currentShape.moveBottom();
+        touchStartY = touchCurrentY;
+    }
+}, { passive: false });
 
 canvas.addEventListener('touchend', (e) => {
     e.preventDefault();
@@ -554,23 +642,110 @@ canvas.addEventListener('touchend', (e) => {
     const diffX = touchEndX - touchStartX;
     const diffY = touchEndY - touchStartY;
     
-    // Horizontal swipe (more prominent)
+    // For final swipe detection (more prominent thresholds)
     if (Math.abs(diffX) > Math.abs(diffY)) {
-        if (diffX > 30) {
+        if (diffX > 30) { // Increased from 20 to 30
             currentShape.moveRight();
-        } else if (diffX < -30) {
+        } else if (diffX < -30) { // Increased from -20 to -30
             currentShape.moveLeft();
         }
     } 
     // Vertical swipe
     else {
-        if (diffY > 30) {
+        if (diffY > 40) { // Increased from 30 to 40
             currentShape.moveBottom();
-        } else if (diffY < -30) {
+        } else if (diffY < -40) { // Increased from -30 to -40
             currentShape.changeRotation();
         }
     }
+    
+    // Stop any continuous movement
+    clearInterval(downInterval);
 }, {passive: false});
+
+let moveInterval;
+
+function startMove(direction) {
+    clearInterval(moveInterval);
+
+    // Always fetch the latest move speed from localStorage
+    let moveSpeed = parseInt(localStorage.getItem('tetrisMoveSpeed')) || 200;
+
+    if (direction === 'left') currentShape.moveLeft();
+    if (direction === 'right') currentShape.moveRight();
+
+    moveInterval = setInterval(() => {
+        if (direction === 'left') currentShape.moveLeft();
+        if (direction === 'right') currentShape.moveRight();
+    }, moveSpeed);
+}
+
+document.getElementById('left-btn').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startMove('left');
+});
+
+document.getElementById('right-btn').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startMove('right');
+});
+
+// Stop on release
+['left-btn', 'right-btn'].forEach(id => {
+    document.getElementById(id).addEventListener('touchend', (e) => {
+        e.preventDefault();
+        clearInterval(moveInterval);
+    });
+    document.getElementById(id).addEventListener('touchcancel', (e) => {
+        e.preventDefault();
+        clearInterval(moveInterval);
+    });
+});
+
+// Smoother down button implementation
+document.getElementById('down-btn').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    // Immediate movement
+    currentShape.moveBottom();
+    
+    // Clear any existing interval
+    clearInterval(downInterval);
+    
+    // Start continuous movement after a brief delay
+    downInterval = setInterval(() => {
+        currentShape.moveBottom();
+    }, 150); // Faster repeat for smoother down movement (50ms)
+});
+
+// Clear intervals when touch ends
+['left-btn', 'right-btn', 'down-btn'].forEach(id => {
+    document.getElementById(id).addEventListener('touchend', (e) => {
+        e.preventDefault();
+        clearInterval(downInterval);
+    });
+    
+    document.getElementById(id).addEventListener('touchcancel', (e) => {
+        e.preventDefault();
+        clearInterval(downInterval);
+    });
+});
+
+let touchOnlyMode = false;
+
+function initTouchOnlyMode() {
+    // Load saved preference
+    const savedMode = localStorage.getItem('tetrisTouchOnlyMode');
+    if (savedMode === 'true') {
+        touchOnlyMode = true;
+        document.body.classList.add('touch-only-mode');
+        
+        // Hide only the control buttons in touch-only mode
+        const controlsContainer = document.querySelector('.controls-container');
+        if (controlsContainer) {
+            controlsContainer.style.display = 'none';
+        }
+    }
+}
 
 
 window.addEventListener('load', function() {
@@ -588,6 +763,7 @@ let initGame = () => {
     window.addEventListener('resize', resizeCanvas);
     resetVars();
     gameLoop();
+    initTouchOnlyMode(); 
 };
 
 const loadingTips = [
@@ -631,14 +807,22 @@ function initLoadingScreen() {
         if (progress >= 100 && elapsed >= MIN_LOADING_TIME) {
             clearInterval(interval);
             loadingScreen.style.opacity = '0';
-            initGame();
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                initGame();
+            }, 500);
         }
     }, PROGRESS_UPDATE_INTERVAL);
 }
 
 window.addEventListener('load', initLoadingScreen);
 
-// Modified window load event
-window.addEventListener('load', function() {
-    initLoadingScreen();
+// Add event listener for the mobile replay button
+document.getElementById('mobile-replay-btn').addEventListener('click', () => {
+    resetVars();
+});
+
+document.getElementById('mobile-replay-btn').addEventListener('touchend', (e) => {
+    e.preventDefault();
+    resetVars();
 });

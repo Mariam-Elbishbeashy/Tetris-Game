@@ -333,7 +333,7 @@ body {
 }
 
 #high-score-display {
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 #high-score {
@@ -430,3 +430,133 @@ body {
     min-height: 2rem;
 }
 
+.touch-only-mode .controls-container {
+    display: none !important;
+}
+
+.touch-only-mode #canvas-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 95% !important;
+}
+
+.touch-only-mode #game-wrapper {
+    max-width: 100% !important;
+}
+
+/* Keep next shape and score visible in touch-only mode */
+.touch-only-mode #nextShapeCanvas,
+.touch-only-mode #scoreCanvas {
+    display: block !important;
+}
+
+@media (orientation: landscape) {
+  
+    
+    .touch-only-mode #canvas-container {
+        width: 50% !important;
+    }
+    
+    .touch-only-mode .pc-side-panel {
+        display: flex !important;
+        flex-direction: column;
+        width: 30% !important;
+
+    }
+    
+    .touch-only-mode .controls-container {
+        display: none !important;
+    }
+}
+
+
+/* Minimal back button styles */
+#back-btn-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    padding-bottom: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    color: white;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+}
+
+#back-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    z-index: 1;
+}
+
+#back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+
+#high-score {
+    font-weight: bold;
+    color: var(--accent);
+}
+
+/* Mobile replay button in header */
+#mobile-replay-btn {
+    display: none; /* Hidden by default */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background 0.2s;
+    z-index: 1;
+}
+
+#mobile-replay-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#mobile-replay-btn .replay-icon {
+    width: 24px;
+    height: 24px;
+    fill: white;
+}
+
+/* Hide undo button on mobile */
+@media (max-width: 767px) {
+    .undo-btn {
+        display: none !important;
+    }
+    
+    #mobile-replay-btn {
+        display: block;
+    }
+    
+    .fab-container {
+        display: none;
+    }
+}
+
+
+/* Fix for PC mode back/highscore container */
+@media (min-width: 768px) {
+
+    #mobile-replay-btn {
+        display: none !important;
+    }
+    
+    .fab-container {
+        display: block;
+    }
+    
+  
+}

@@ -8,7 +8,7 @@
 }
 
 /* Speed confirmation message */
-.speed-confirmation {
+.speed-confirmation, .touch-confirmation {
     position: fixed;
     bottom: 30px;
     left: 50%;
@@ -25,7 +25,7 @@
     z-index: 100;
 }
 
-.speed-confirmation.active {
+.speed-confirmation.active, .touch-confirmation.active {
     opacity: 1;
     visibility: visible;
 }
@@ -119,4 +119,77 @@
 .speed-select:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+}
+
+.settings-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.back-button {
+    background: linear-gradient(145deg, var(--secondary), var(--button-color));
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--button-shadow);
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.back-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Toggle switch styles */
+.toggle-control {
+    position: relative;
+    display: inline-block;
+}
+
+.toggle-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.toggle-label {
+    display: block;
+    width: 50px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 34px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toggle-label:after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+}
+
+.toggle-input:checked + .toggle-label {
+    background: var(--accent);
+}
+
+.toggle-input:checked + .toggle-label:after {
+    transform: translateX(26px);
 }

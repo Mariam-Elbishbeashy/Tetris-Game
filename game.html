@@ -28,6 +28,11 @@
         <div id="back-btn-container">
             <button id="back-btn">← Back</button>
             <span id="high-score-display">High Score: <span id="high-score">0</span></span>
+            <button id="mobile-replay-btn" class="mobile-only-replay">
+                <svg class="replay-icon" viewBox="0 0 24 24">
+                    <path d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/>
+                </svg>
+            </button>
         </div>
         <div id="canvas-container">
             <canvas id="canvas"></canvas>
@@ -53,14 +58,27 @@
             </div>
         </div> 
     </div>
-    <!-- Add this right before closing </body> -->
-<div class="fab-container">
-  <button id="replay-fab" class="fab-button" aria-label="Play Again">
-    <svg class="replay-icon" viewBox="0 0 24 24">
-      <path d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/>
-    </svg>
-  </button>
-</div>
+
+
+     <!-- Hidden audio elements for sound effects -->
+    <!-- <audio id="move-sound" preload="auto">
+        <source src="./sounds/movement-swipe-whoosh-3-186577.mp3" type="audio/mp3">
+    </audio>
+    <audio id="rotate-sound" preload="auto">
+        <source src="./sounds/movement-swipe-whoosh-3-186577.mp3" type="audio/mp3">
+    </audio>
+    <audio id="drop-sound" preload="auto">
+        <source src="./sounds/block-6839.mp3" type="audio/mp3">
+    </audio> -->
+    <audio id="clear-sound" preload="auto">
+        <source src="./sounds/game-start-6104.mp3" type="audio/mp3">
+    </audio> 
+    <audio id="gameover-sound" preload="auto">
+        <source src="./sounds/game-over-arcade-6435.mp3" type="audio/mp3">
+    </audio>
+    <audio id="levelup-sound" preload="auto">
+        <source src="./sounds/level-up-02-199574.mp3" type="audio/mp3">
+    </audio>
     <img id="image" src="./rotations.png" style="display: none;" />
     <script src="tetris.js"></script>
 </body>

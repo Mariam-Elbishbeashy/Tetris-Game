@@ -254,10 +254,22 @@
 
                 </select>
             </div>
+
+            <div class="setting-item">
+                <label for="touch-only">Touch Only Mode:</label>
+                <div class="toggle-control">
+                    <input type="checkbox" id="touch-only" class="toggle-input">
+                    <label for="touch-only" class="toggle-label"></label>
+                </div>
+            </div>
+
         </div>
     </div>
     <div class="speed-confirmation" id="speed-confirmation">
         Speed setting saved!
+    </div>
+     <div class="touch-confirmation" id="touch-confirmation">
+        Touch mode saved!
     </div>
     <!-- Confirmation Modal -->
     <div class="modal-overlay" id="confirm-modal">
@@ -291,6 +303,14 @@
             const confirmBtn = document.getElementById('confirm-reset');
             const successMessage = document.getElementById('success-message');
 
+            // Speed control elements
+            const speedSelect = document.getElementById('speed-select');
+            const speedConfirmation = document.getElementById('speed-confirmation');
+            
+            // Touch mode elements
+            const touchOnlyToggle = document.getElementById('touch-only');
+            const touchConfirmation = document.getElementById('touch-confirmation');
+
             // Show modal when reset button clicked
             resetBtn.addEventListener('click', () => {
                 confirmModal.classList.add('active');
@@ -320,9 +340,6 @@
                     confirmModal.classList.remove('active');
                 }
             });
-            // Add to your existing settings.js script
-            const speedSelect = document.getElementById('speed-select');
-            const speedConfirmation = document.getElementById('speed-confirmation');
 
             // Load saved speed
             const savedSpeed = localStorage.getItem('tetrisSpeed') || '1';
@@ -347,9 +364,32 @@
                     navigator.vibrate(50);
                 }
             });
-        });
 
-        
+            // Load touch-only mode setting
+            const savedTouchOnly = localStorage.getItem('tetrisTouchOnlyMode');
+            if (savedTouchOnly === 'true') {
+                touchOnlyToggle.checked = true;
+            }
+
+            // Save touch-only mode immediately when toggled
+            touchOnlyToggle.addEventListener('change', function() {
+                localStorage.setItem('tetrisTouchOnlyMode', this.checked);
+                
+                // Show confirmation
+                touchConfirmation.textContent = `Touch mode ${this.checked ? 'enabled' : 'disabled'}`;
+                touchConfirmation.classList.add('active');
+                
+                // Hide after 2 seconds
+                setTimeout(() => {
+                    touchConfirmation.classList.remove('active');
+                }, 2000);
+                
+                // Vibrate on mobile if supported
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50);
+                }
+            });
+        });
     </script>
 </body>
 </html>
